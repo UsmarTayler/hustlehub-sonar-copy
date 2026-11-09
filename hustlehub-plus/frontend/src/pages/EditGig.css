@@ -1,0 +1,36 @@
+.edit-gig-page {
+  padding: 2rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.edit-gig-loading {
+  padding: 2rem;
+  color: var(--color-text-muted);
+}
+
+.edit-gig-subtext {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin: 0.4rem 0 1.25rem 0;
+  line-height: 1.5;
+}
+
+.edit-gig-back {
+  display: inline-block;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.edit-gig-back:hover {
+  color: var(--color-text);
+}
+
+.edit-gig-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 2rem;
+}

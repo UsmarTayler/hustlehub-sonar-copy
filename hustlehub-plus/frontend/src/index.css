@@ -1,0 +1,55 @@
+:root {
+  --color-bg: #12142B;
+  --color-surface: #1B1E3D;
+  --color-surface-light: #232752;
+  --color-accent: #F5A623;
+  --color-accent-hover: #FFB84D;
+  --color-teal: #2DD4A7;
+  --color-text: #F0EEE6;
+  --color-text-muted: #9096B8;
+  --color-error: #FF6B6B;
+  --color-border: #2E3260;
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  margin: 0;
+}
+
+a {
+  color: var(--color-accent);
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

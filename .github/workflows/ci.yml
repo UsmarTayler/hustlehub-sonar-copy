@@ -1,0 +1,319 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "Part-3"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "22"
+
+jobs:
+  backend:
+    name: Backend - test and audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hustlehub-plus/backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: hustlehub-plus/backend/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Unit and security tests
+        run: npm test
+      - name: Dependency vulnerability scan (production, high and above)
+        run: npm run audit:prod
+
+  frontend:
+    name: Frontend - test, build and audit
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hustlehub-plus/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: hustlehub-plus/frontend/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Component tests
+        run: npm run test:ci
+      - name: Build
+        run: npm run build
+      - name: Dependency vulnerability scan (production, high and above)
+        run: npm run audit:prod
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: hustlehub-plus/frontend/dist
+          retention-days: 7
+
+  static-analysis:
+    name: Static code analysis (ESLint)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            hustlehub-plus/backend/package-lock.json
+            hustlehub-plus/frontend/package-lock.json
+      - name: Install backend dependencies
+        run: npm ci
+        working-directory: hustlehub-plus/backend
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: hustlehub-plus/frontend
+      # The reports are written even when ESLint finds errors so they can be
+      # kept as evidence; the summary step below is the one that fails the job.
+      - name: Analyse backend (ESLint with security rules)
+        run: |
+          mkdir -p ../reports/static-analysis
+          npx eslint . --format json --output-file ../reports/static-analysis/backend-eslint.json || true
+        working-directory: hustlehub-plus/backend
+      - name: Analyse frontend (ESLint with React rules)
+        run: |
+          mkdir -p ../reports/static-analysis
+          npx eslint . --format json --output-file ../reports/static-analysis/frontend-eslint.json || true
+        working-directory: hustlehub-plus/frontend
+      - name: Summarise results and fail on errors
+        run: |
+          node scripts/lint-summary.js \
+            "Backend=reports/static-analysis/backend-eslint.json" \
+            "Frontend=reports/static-analysis/frontend-eslint.json" \
+            --out reports/static-analysis/summary.md
+        working-directory: hustlehub-plus
+      - name: Publish summary to the run page
+        if: always()
+        run: |
+          if [ -f reports/static-analysis/summary.md ]; then
+            cat reports/static-analysis/summary.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+        working-directory: hustlehub-plus
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: static-analysis-results
+          path: hustlehub-plus/reports/static-analysis
+          retention-days: 30
+
+  docker-build:
+    name: Docker stack - build and run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Compose refuses to start without a secret. A random one is created for
+      # this run only, so no secret is stored in the repository.
+      - name: Generate a throwaway JWT secret for this run
+        run: |
+          JWT_SECRET=$(openssl rand -hex 32)
+          echo "::add-mask::$JWT_SECRET"
+          echo "JWT_SECRET=$JWT_SECRET" >> "$GITHUB_ENV"
+      - name: Validate the Compose file
+        if: ${{ hashFiles('docker-compose.yml') != '' }}
+        run: docker compose config --quiet
+      - name: Build the API and client images
+        if: ${{ hashFiles('docker-compose.yml') != '' }}
+        run: docker compose build
+      # --wait blocks until every container reports healthy, so a container
+      # that crashes or never becomes healthy fails the job.
+      - name: Start the stack and wait until the containers are healthy
+        if: ${{ hashFiles('docker-compose.yml') != '' }}
+        run: docker compose up -d --wait --wait-timeout 180
+      - name: Prove the containers are working
+        if: ${{ hashFiles('docker-compose.yml') != '' }}
+        run: |
+          docker compose ps
+          echo "--- client serves the frontend over HTTPS"
+          curl -ksf -o /dev/null -w "HTTP %{http_code}\n" https://localhost:8443/
+          echo "--- client reaches the API through nginx"
+          curl -ksf https://localhost:8443/api/health
+          echo
+          {
+            echo "## Docker stack"
+            echo
+            echo "All containers started and reported healthy. The client answered on https://localhost:8443 and reached the API through nginx at /api/health."
+            echo
+            echo '```'
+            docker compose ps
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Show container logs if anything failed
+        if: ${{ failure() && hashFiles('docker-compose.yml') != '' }}
+        run: docker compose logs --no-color --tail 100
+      - name: Stop the stack
+        if: ${{ always() && hashFiles('docker-compose.yml') != '' }}
+        run: docker compose down -v
+      - name: Skipped, no docker-compose.yml on this branch
+        if: ${{ hashFiles('docker-compose.yml') == '' }}
+        run: echo "No docker-compose.yml found, nothing to build."
+
+  e2e-tests:
+    name: Browser tests (Playwright)
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    services:
+      mongo:
+        image: mongo:7
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      NODE_ENV: test
+      PORT: 5443
+      HTTP_PORT: 5081
+      MONGODB_URI_LOCAL: mongodb://localhost:27017/hustlehub_e2e
+      JWT_EXPIRES_IN: 1h
+      JWT_ISSUER: hustlehub-plus
+      JWT_AUDIENCE: hustlehub-api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            hustlehub-plus/backend/package-lock.json
+            hustlehub-plus/frontend/package-lock.json
+      - name: Generate a throwaway JWT secret for this run
+        run: |
+          JWT_SECRET=$(openssl rand -hex 32)
+          echo "::add-mask::$JWT_SECRET"
+          echo "JWT_SECRET=$JWT_SECRET" >> "$GITHUB_ENV"
+      - name: Install backend dependencies
+        run: npm ci
+        working-directory: hustlehub-plus/backend
+      - name: Generate the self-signed HTTPS certificate
+        run: npm run cert
+        working-directory: hustlehub-plus/backend
+      - name: Start the API over HTTPS
+        working-directory: hustlehub-plus/backend
+        run: |
+          nohup node server.js > ../server.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -ksf https://localhost:5443/api/health > /dev/null; then
+              echo "API is up"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "API did not start"
+          cat ../server.log
+          exit 1
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: hustlehub-plus/frontend
+      - name: Install the Chromium browser used by the tests
+        run: npx playwright install --with-deps chromium
+        working-directory: hustlehub-plus/frontend
+      # Playwright builds the frontend and serves it with vite preview, which
+      # forwards /api to the API started above.
+      - name: Run the browser tests
+        run: npm run test:e2e
+        working-directory: hustlehub-plus/frontend
+      - name: Show the server log if anything failed
+        if: failure()
+        run: cat hustlehub-plus/server.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: |
+            hustlehub-plus/frontend/playwright-report
+            hustlehub-plus/frontend/test-results
+          retention-days: 30
+          if-no-files-found: ignore
+
+  api-tests:
+    name: API endpoint tests (Newman)
+    runs-on: ubuntu-latest
+    needs: backend
+    services:
+      mongo:
+        image: mongo:7
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      NODE_ENV: test
+      PORT: 5443
+      HTTP_PORT: 5081
+      MONGODB_URI_LOCAL: mongodb://localhost:27017/hustlehub_ci
+      JWT_EXPIRES_IN: 1h
+      JWT_ISSUER: hustlehub-plus
+      JWT_AUDIENCE: hustlehub-api
+      ADMIN_EMAIL: admin@example.com
+      ADMIN_NAME: CI Admin
+    defaults:
+      run:
+        working-directory: hustlehub-plus/backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: hustlehub-plus/backend/package-lock.json
+      # Random values for this run only, so no secret or password is stored in
+      # the workflow. The admin password is passed to the collection below.
+      - name: Generate throwaway secrets for this run
+        run: |
+          JWT_SECRET=$(openssl rand -hex 32)
+          ADMIN_PASSWORD="Aa1!$(openssl rand -hex 12)"
+          echo "::add-mask::$JWT_SECRET"
+          echo "::add-mask::$ADMIN_PASSWORD"
+          echo "JWT_SECRET=$JWT_SECRET" >> "$GITHUB_ENV"
+          echo "ADMIN_PASSWORD=$ADMIN_PASSWORD" >> "$GITHUB_ENV"
+      - name: Install dependencies
+        run: npm ci
+      - name: Generate the self-signed HTTPS certificate
+        run: npm run cert
+      - name: Seed the admin account the collection logs in with
+        run: npm run seed:admin
+      - name: Start the API over HTTPS
+        run: |
+          nohup node server.js > ../server.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -ksf https://localhost:5443/api/health > /dev/null; then
+              echo "API is up"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "API did not start"
+          cat ../server.log
+          exit 1
+      - name: Run the Postman collection with Newman
+        run: npm run test:api -- --env-var "adminPassword=$ADMIN_PASSWORD"
+      - name: Show the server log if anything failed
+        if: failure()
+        run: cat ../server.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: newman-report
+          path: hustlehub-plus/reports/newman.html
+          retention-days: 30

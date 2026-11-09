@@ -1,0 +1,47 @@
+.status-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  background: var(--color-surface-light);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+
+.status-badge.status-pending {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+
+.status-badge.status-confirmed,
+.status-badge.status-completed,
+.status-badge.status-active {
+  color: var(--color-teal);
+  border-color: var(--color-teal);
+}
+
+
+.status-badge.status-booked {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+
+.status-badge.status-cancelled,
+.status-badge.status-banned {
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+
+.status-badge.status-inactive,
+.status-badge.status-suspended {
+  color: var(--color-text-muted);
+  border-color: var(--color-border);
+}

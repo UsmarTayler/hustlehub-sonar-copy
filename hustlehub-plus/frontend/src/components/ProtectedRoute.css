@@ -1,0 +1,15 @@
+.protected-loading {
+  padding: 2rem;
+  color: var(--color-text-muted);
+}
+
+.protected-denied {
+  padding: 2rem;
+  max-width: 32rem;
+  margin: 0 auto;
+}
+
+.protected-denied p {
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}

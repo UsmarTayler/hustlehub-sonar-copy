@@ -1,0 +1,44 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "HustleHub+ Backend API - Secure Freelance Marketplace",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "cert": "node scripts/generate-cert.js",
+    "test": "npm run test:security && npm run test:admin && npm run test:hardening --if-present",
+    "test:security": "node tests/security.test.js",
+    "test:admin": "node tests/admin.test.js",
+    "lint": "eslint .",
+    "audit:prod": "npm audit --omit=dev --audit-level=high",
+    "test:api": "newman run ../postman/collectionv3.json -e ../postman/env.local2.json --insecure -r cli,htmlextra --reporter-htmlextra-export ../reports/newman.html",
+    "seed:admin": "node utils/seedAdmin.js",
+    "test:hardening": "node tests/hardening.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "axios": "^1.21.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "express-validator": "^7.3.2",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^8.24.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "eslint-plugin-security": "^4.2.0",
+    "globals": "^17.13.0",
+    "newman": "^6.2.2",
+    "newman-reporter-htmlextra": "^1.22.5",
+    "nodemon": "^3.1.14"
+  }
+}

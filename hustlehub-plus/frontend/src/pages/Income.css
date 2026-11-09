@@ -1,0 +1,302 @@
+.income-page {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.income-loading {
+  padding: 2rem;
+  color: var(--color-text-muted);
+}
+
+.income-header {
+  margin-bottom: 1.75rem;
+}
+
+.income-subtext {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin: 0.25rem 0 0 0;
+}
+
+/* ---------- Summary cards ---------- */
+
+.income-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.income-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 1.1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.income-card.highlight {
+  border-color: var(--color-accent);
+}
+
+.income-card-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.income-card-value {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.income-card.highlight .income-card-value {
+  color: var(--color-accent);
+}
+
+.income-card-value.warning {
+  color: var(--color-error);
+}
+
+.income-card-value.success {
+  color: var(--color-teal);
+}
+
+/* ---------- Tax panel ---------- */
+
+.income-tax {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.income-tax-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1.25rem;
+}
+
+.income-tax-header h2 {
+  font-size: 1.1rem;
+}
+
+.income-tax-rate {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--color-accent);
+}
+
+.income-tax-figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.income-tax-figures > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.income-tax-table,
+.income-period-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.income-tax-table th,
+.income-tax-table td,
+.income-period-table th,
+.income-period-table td {
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.income-tax-table th,
+.income-period-table th {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.income-tax-table tbody tr:last-child td,
+.income-period-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.income-tax-disclaimer {
+  margin: 1rem 0 0 0;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* ---------- Period breakdown ---------- */
+
+.income-period {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.income-period-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.income-period-header h2 {
+  font-size: 1.1rem;
+}
+
+.income-tabs {
+  display: flex;
+  gap: 0.35rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.2rem;
+}
+
+.income-tab {
+  padding: 0.4rem 0.8rem;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-radius: 6px;
+  font-family: var(--font-body);
+}
+
+.income-tab:hover {
+  color: var(--color-text);
+}
+
+.income-tab.active {
+  background: var(--color-surface-light);
+  color: var(--color-text);
+}
+
+.income-period-loading {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.income-period-table td.mono {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+.income-period-table td.accent {
+  color: var(--color-accent);
+}
+
+/* ---------- Transaction history ---------- */
+
+.income-transactions h2 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.income-transactions-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.income-transaction-row {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 0.9rem 1.1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.income-transaction-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 180px;
+}
+
+.income-transaction-client {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.income-transaction-date {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+}
+
+.income-transaction-message {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-top: 0.2rem;
+}
+
+.income-transaction-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+}
+
+.income-transaction-amount {
+  font-family: var(--font-mono);
+  color: var(--color-accent);
+  font-size: 0.95rem;
+}
+
+.income-transaction-status {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.income-transaction-status.status-completed {
+  color: var(--color-teal);
+}
+
+.income-transaction-status.status-pending {
+  color: var(--color-accent);
+}
+
+.income-transaction-status.status-failed,
+.income-transaction-status.status-refunded {
+  color: var(--color-error);
+}

@@ -1,0 +1,366 @@
+{
+  "info": {
+    "_postman_id": "acfeae05-abbe-4153-bf83-b6e87c6f3f48",
+    "name": "HustleHub+ API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "57270273"
+  },
+  "item": [
+    {
+      "name": "1. Server Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://localhost:5443/",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "5443",
+          "path": [""]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2. Register",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Test User\",\r\n  \"email\": \"testuser@example.com\",\r\n  \"password\": \"password123\"\r\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "https://localhost:5443/api/auth/register",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "5443",
+          "path": ["api", "auth", "register"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2a. Register - Client Role",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Client User\",\r\n  \"email\": \"client@example.com\",\r\n  \"password\": \"password123\",\r\n  \"role\": \"client\"\r\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "https://localhost:5443/api/auth/register",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "5443",
+          "path": ["api", "auth", "register"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2b. Register - Freelancer Role",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Freelancer User\",\r\n  \"email\": \"freelancer@example.com\",\r\n  \"password\": \"password123\",\r\n  \"role\": \"freelancer\"\r\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "https://localhost:5443/api/auth/register",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "5443",
+          "path": ["api", "auth", "register"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2c. Register - Admin Role",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Admin User\",\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"password123\",\r\n  \"role\": \"admin\"\r\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "https://localhost:5443/api/auth/register",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "5443",
+          "path": ["api", "auth", "register"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2d. Register - Invalid Role",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Bad Role User\",\r\n  \"email\": \"badrole@example.com\",\r\n  \"password\": \"password123\",\r\n  \"role\": \"superuser\"\r\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "https://localhost:5443/api/auth/register",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "5443",
+          "path": ["api", "auth", "register"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "3. Duplicate Email Registration",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Test User\",\r\n  \"email\": \"testuser@example.com\",\r\n  \"password\": \"password123\"\r\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "https://localhost:5443/api/auth/register",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "5443",
+          "path": ["api", "auth", "register"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4. Invalid Registration Data",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"\",\r\n  \"email\": \"not-an-email\",\r\n  \"password\": \"123\"\r\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "https://localhost:5443/api/auth/register",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "5443",
+          "path": ["api", "auth", "register"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5. Successful Login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"testuser@example.com\",\r\n  \"password\": \"password123\"\r\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "https://localhost:5443/api/auth/login",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "5443",
+          "path": ["api", "auth", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5a. Login - Client Role",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"client@example.com\",\r\n  \"password\": \"password123\"\r\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "https://localhost:5443/api/auth/login",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "5443",
+          "path": ["api", "auth", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5b. Login - Freelancer Role",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"freelancer@example.com\",\r\n  \"password\": \"password123\"\r\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "https://localhost:5443/api/auth/login",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "5443",
+          "path": ["api", "auth", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "5c. Login - Admin Role",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"admin@example.com\",\r\n  \"password\": \"password123\"\r\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "https://localhost:5443/api/auth/login",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "5443",
+          "path": ["api", "auth", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "6. Login with Invalid Password",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"testuser@example.com\",\r\n  \"password\": \"wrongpassword\"\r\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "https://localhost:5443/api/auth/login",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "5443",
+          "path": ["api", "auth", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "7. Unregistered Email",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"doesnotexist@example.com\",\r\n  \"password\": \"password123\"\r\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "https://localhost:5443/api/auth/login",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "5443",
+          "path": ["api", "auth", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "8. Invalid Login Information",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"not-an-email\"\r\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "https://localhost:5443/api/auth/login",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "5443",
+          "path": ["api", "auth", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "9. Profile Without Authentication",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://localhost:5443/api/auth/profile",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "5443",
+          "path": ["api", "auth", "profile"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "10. Invalid Authentication Token",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            { "key": "token", "value": "abc.def.ghi", "type": "string" }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://localhost:5443/api/auth/profile",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "5443",
+          "path": ["api", "auth", "profile"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "11. Successful Profile Authentication",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0dXNlckBleGFtcGxlLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzg4MTczOTU2LCJleHAiOjE3ODgxNzc1NTYsImF1ZCI6Imh1c3RsZWh1Yi1wbHVzLWNsaWVudCIsImlzcyI6Imh1c3RsZWh1Yi1wbHVzIn0.6ueCC9w0qov_qceHpkekz6WkWTygqOcEtOiPAIhPh_g",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://localhost:5443/api/auth/profile",
+          "protocol": "https",
+          "host": ["localhost"],
+          "port": "5443",
+          "path": ["api", "auth", "profile"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+.freelancer-bookings-page {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.freelancer-bookings-header {
+  margin-bottom: 1.5rem;
+}
+
+.freelancer-bookings-subtext {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin: 0.25rem 0 0 0;
+  line-height: 1.5;
+  max-width: 40rem;
+}
+
+.freelancer-bookings-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.freelancer-booking-row {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.freelancer-booking-main {
+  flex: 1;
+  min-width: 220px;
+}
+
+.freelancer-booking-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.freelancer-booking-title-row h3 {
+  font-size: 1rem;
+}
+
+.freelancer-booking-meta {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  display: flex;
+  gap: 0.4rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.meta-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.meta-dot {
+  color: var(--color-border);
+}
+
+.freelancer-booking-amount {
+  font-family: var(--font-mono);
+  color: var(--color-accent);
+}
+
+.freelancer-booking-message {
+  margin: 0.6rem 0 0 0;
+  font-size: 0.85rem;
+  color: var(--color-text);
+  font-style: italic;
+  line-height: 1.5;
+  border-left: 2px solid var(--color-border);
+  padding-left: 0.75rem;
+}
+
+.freelancer-booking-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  min-width: 9rem;
+}
+
+.status-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.status-select {
+  padding: 0.45rem 0.6rem;
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+}
+
+.status-select:focus {
+  border-color: var(--color-teal);
+  outline: none;
+}
+
+.status-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.status-saving {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+}
+
+@media (max-width: 600px) {
+  .freelancer-booking-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .freelancer-booking-actions {
+    align-items: flex-start;
+  }
+}
